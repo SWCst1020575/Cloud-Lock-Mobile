@@ -8,9 +8,6 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
@@ -22,9 +19,12 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import 'react-native-gesture-handler'
 import Home from './src/Home';
+import Register from './src/Register';
+import Device from './src/Device';
+import Login from './src/login';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-const Drawer = createDrawerNavigator();
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+const Stack = createNativeStackNavigator();
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -38,27 +38,14 @@ function App(): JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <NavigationContainer>
-            <Drawer.Navigator initialRouteName='home'>
-              <Drawer.Screen name='home' component={Home} />
-            </Drawer.Navigator>
-          </NavigationContainer>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='Login'>
+        <Stack.Screen name='Home' component={Home} />
+        <Stack.Screen name='Login' component={Login} />
+        <Stack.Screen name='Register' component={Register} />
+        <Stack.Screen name='Device' component={Device} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
