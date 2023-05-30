@@ -20,10 +20,7 @@ export type RootStackParamList = {
 export default function Home(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.stack}>

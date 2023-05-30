@@ -14,9 +14,6 @@ import 'react-native-gesture-handler'
 function Register(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
 
   return (
     <View>
