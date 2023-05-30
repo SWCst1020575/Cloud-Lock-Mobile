@@ -9,7 +9,7 @@ import {
     Colors,
 } from 'react-native/Libraries/NewAppScreen';
 import 'react-native-gesture-handler'
-
+import { ListItem } from 'react-native-elements';
 
 export default function Device(): JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
@@ -21,6 +21,7 @@ export default function Device(): JSX.Element {
     return (
         <View>
             <Text>Device page</Text>
+            
         </View>
     );
 }

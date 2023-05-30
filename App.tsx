@@ -8,14 +8,14 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import {
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
+    StyleSheet,
+    Text,
+    useColorScheme,
+    View,
 } from 'react-native';
 
 import {
-  Colors,
+    Colors,
 } from 'react-native/Libraries/NewAppScreen';
 import 'react-native-gesture-handler'
 import Home from './src/Home';
@@ -27,45 +27,45 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
 
 type SectionProps = PropsWithChildren<{
-  title: string;
+    title: string;
 }>;
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+    const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+    const backgroundStyle = {
+        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    };
 
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='Login'>
-        <Stack.Screen name='Home' component={Home} />
-        <Stack.Screen name='Login' component={Login} />
-        <Stack.Screen name='Register' component={Register} />
-        <Stack.Screen name='Device' component={Device} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName='Login'>
+                <Stack.Screen name='Home' component={Home} />
+                <Stack.Screen name='Login' component={Login} />
+                <Stack.Screen name='Register' component={Register} />
+                <Stack.Screen name='Device' component={Device} />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
+    sectionContainer: {
+        marginTop: 32,
+        paddingHorizontal: 24,
+    },
+    sectionTitle: {
+        fontSize: 24,
+        fontWeight: '600',
+    },
+    sectionDescription: {
+        marginTop: 8,
+        fontSize: 18,
+        fontWeight: '400',
+    },
+    highlight: {
+        fontWeight: '700',
+    },
 });
 
 export default App;
