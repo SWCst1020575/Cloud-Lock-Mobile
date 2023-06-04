@@ -13,6 +13,8 @@ import {
 import 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Input } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/AntDesign'
 export type RootStackParamList = {
     Home: {} | undefined
 };
@@ -26,6 +28,8 @@ export default function Login(): JSX.Element {
     return (
         <View style={styles.container}>
             <View style={styles.stack}>
+                <Input placeholder='Email' />
+                <Input placeholder="Password" secureTextEntry={true} />
                 <Pressable
                     android_ripple={{ color: 'rgba(255, 255, 255, 0.4)' }}
                     style={({ pressed }) => [
@@ -39,6 +43,30 @@ export default function Login(): JSX.Element {
                 >
                     <Text style={styles.text}>Login</Text>
                 </Pressable>
+                <Pressable
+                    android_ripple={{ color: 'rgba(255, 255, 255, 0.4)' }}
+                    style={({ pressed }) => [
+                        {
+                            backgroundColor: pressed ? 'rgba(0, 0, 0, 0.8)' : 'black',
+                        }, styles.button]}
+                    onPress={() => console.log("register")}
+                >
+                    <Text style={styles.text}>Register</Text>
+                </Pressable>
+                <View style={{ justifyContent: 'center', flexDirection: "row" }}>
+                    <Text style={{ marginVertical: 5, fontSize: 16, color: "rgba(0, 0, 0, 0.6)" }}>------------------OAuth------------------</Text>
+                </View>
+                <Pressable
+                    android_ripple={{ color: 'rgba(255, 255, 255, 0.4)' }}
+                    style={({ pressed }) => [
+                        {
+                            backgroundColor: pressed ? 'rgba(0, 0, 0, 0.8)' : 'black',
+                        }, styles.button]}
+                    onPress={() => console.log("google")}
+                >
+                    <Icon name={'google'} size={20} color={'#FFF'} />
+                </Pressable>
+
             </View>
 
         </View >
@@ -51,7 +79,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignContent: 'center',
         justifyContent: 'center',
-        padding: 40
+        padding: 36
     },
     button: {
         alignItems: 'center',
@@ -60,6 +88,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 32,
         borderRadius: 10,
         elevation: 3,
+        marginVertical: 8
     },
     text: {
         fontSize: 18,
