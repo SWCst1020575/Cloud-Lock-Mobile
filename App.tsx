@@ -22,9 +22,11 @@ import Home from './src/Home';
 import Register from './src/Register';
 import Device from './src/Device';
 import Login from './src/login';
+import RegisterDevice from './src/RegisterDevice';
 import DeviceDetail from './src/DeviceDetail';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 const Stack = createNativeStackNavigator();
 
 type SectionProps = PropsWithChildren<{
@@ -44,6 +46,7 @@ function App(): JSX.Element {
                 <Stack.Screen name='Login' component={Login} />
                 <Stack.Screen name='Home' component={Home} />
                 <Stack.Screen name='Register' component={Register} />
+                <Stack.Screen name='RegisterDevice' component={RegisterDevice} />
                 <Stack.Screen name='Device' component={Device} />
                 <Stack.Screen name='DeviceDetail' component={DeviceDetail} />
             </Stack.Navigator>

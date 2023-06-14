@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "2010434732",
+    "project_id": "cloudfinal-3f344",
+    "storage_bucket": "cloudfinal-3f344.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2010434732:android:c7686ca17330e04ee92309",
+        "android_client_info": {
+          "package_name": "com.cloudlockmobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2010434732-qi430ph0b14a3c9ddq9jki9c31n3en6s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDacaoDYjfCz7E7pvjcu4xCZQvZj71WYVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "2010434732-ht4b642s6dhbuk8edluo7d43stn83ea1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
