@@ -16,14 +16,17 @@ import { StackNavigationProp } from '@react-navigation/stack';
 export type RootStackParamList = {
     Register: {} | undefined,
     Device: {} | undefined,
-    login: {} | undefined,
+    Login: {} | undefined,
     RegisterDevice: {} | undefined,
 };
 import auth from '@react-native-firebase/auth';
+interface User {
+    email: string;
+}
 export default function Home(): JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-    const [user, setUser] = useState();
+    const [user, setUser] = useState<User>({ email: "" });
     const [initializing, setInitializing] = useState(true);
     function onAuthStateChanged(user: any) {
         setUser(user);
@@ -32,7 +35,7 @@ export default function Home(): JSX.Element {
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-        console.log(user);
+        //console.log(user);
         return subscriber; // unsubscribe on unmount
     }, []);
     return (
@@ -56,7 +59,7 @@ export default function Home(): JSX.Element {
                         {
                             backgroundColor: pressed ? 'rgba(0, 0, 0, 0.8)' : 'black',
                         }, styles.button]}
-                    onPress={() => navigation.navigate('Device', {})}
+                    onPress={() => navigation.navigate('Device', { "userID": "rqe@abc.abc" })}
                 >
                     <Text style={styles.text}>Device list</Text>
                 </Pressable>
@@ -70,10 +73,13 @@ export default function Home(): JSX.Element {
                         }, styles.button]}
                     onPress={() => {
                         auth().signOut()
-                            .then(() => console.log('User signed out!'));
+                            .then(() => console.log('User signed out!'))
+                            .catch(error => {
+                                console.log(error);
+                            });;
                         navigation.reset({
                             index: 0,
-                            routes: [{ name: 'login' }],
+                            routes: [{ name: 'Login' }],
                         })
                     }}
                 >

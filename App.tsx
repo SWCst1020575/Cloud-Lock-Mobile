@@ -32,7 +32,9 @@ const Stack = createNativeStackNavigator();
 type SectionProps = PropsWithChildren<{
     title: string;
 }>;
-
+interface DeviceProp {
+    route: { params: { userID: string } };
+}
 function App(): JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
 
@@ -47,7 +49,7 @@ function App(): JSX.Element {
                 <Stack.Screen name='Home' component={Home} />
                 <Stack.Screen name='Register' component={Register} />
                 <Stack.Screen name='RegisterDevice' component={RegisterDevice} />
-                <Stack.Screen name='Device' component={Device} />
+                <Stack.Screen name='Device' component={Device} initialParams={{ route: { params: { userID: "" } } }} />
                 <Stack.Screen name='DeviceDetail' component={DeviceDetail} />
             </Stack.Navigator>
         </NavigationContainer>

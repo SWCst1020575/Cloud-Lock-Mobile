@@ -68,7 +68,7 @@ export default function Login(): JSX.Element {
                 })
             })
             .catch(error => {
-                console.error(error);
+                console.log(error);
             });
     }
     return (
