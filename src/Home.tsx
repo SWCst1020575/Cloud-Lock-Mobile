@@ -30,7 +30,7 @@ export default function Home(): JSX.Element {
             {
               backgroundColor: pressed ? 'rgba(0, 0, 0, 0.8)' : 'black',
             }, styles.button]}
-          onPress={() => navigation.navigate('Register', {})}
+          //onPress={() => navigation.navigate('RegisterDevice', {})}
         >
           <Text style={styles.text}>Register device</Text>
         </Pressable>

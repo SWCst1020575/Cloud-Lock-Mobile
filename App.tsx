@@ -21,7 +21,7 @@ import 'react-native-gesture-handler'
 import Home from './src/Home';
 import Register from './src/Register';
 import Device from './src/Device';
-import Login from './src/Login';
+import Login from './src/login';
 import DeviceDetail from './src/DeviceDetail';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

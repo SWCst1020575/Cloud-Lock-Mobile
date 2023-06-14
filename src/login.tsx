@@ -14,10 +14,16 @@ import 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Input } from 'react-native-elements';
+import Register from './Register';
 import Icon from 'react-native-vector-icons/AntDesign'
 export type RootStackParamList = {
+    Register: {} | undefined,
     Home: {} | undefined
 };
+import { Amplify, Auth } from 'aws-amplify';
+import awsconfig from './aws-exports';
+Amplify.configure(awsconfig);
+
 export default function Login(): JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -49,7 +55,7 @@ export default function Login(): JSX.Element {
                         {
                             backgroundColor: pressed ? 'rgba(0, 0, 0, 0.8)' : 'black',
                         }, styles.button]}
-                    onPress={() => console.log("register")}
+                    onPress={() => navigation.navigate('Register', {})}
                 >
                     <Text style={styles.text}>Register</Text>
                 </Pressable>
@@ -66,7 +72,19 @@ export default function Login(): JSX.Element {
                 >
                     <Icon name={'google'} size={20} color={'#FFF'} />
                 </Pressable>
-
+                <Pressable
+                    android_ripple={{ color: 'rgba(255, 255, 255, 0.4)' }}
+                    style={({ pressed }) => [
+                        {
+                            backgroundColor: pressed ? 'rgba(0, 0, 0, 0.8)' : 'black',
+                        }, styles.button]}
+                    onPress={() => navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Home' }],
+                    })}
+                >
+                    <Text style={styles.text}>Skip(for test)</Text>
+                </Pressable>
             </View>
 
         </View >
