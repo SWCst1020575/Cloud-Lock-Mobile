@@ -6,9 +6,7 @@ import {
     StyleSheet
 } from 'react-native';
 import { Text, TouchableHighlight } from 'react-native';
-import {
-    Colors
-} from 'react-native/Libraries/NewAppScreen';
+import Loading from './component/Loading';
 import 'react-native-gesture-handler'
 import { ListItem, LinearProgress, Divider } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/core';
@@ -22,12 +20,12 @@ interface DeviceProp {
 export default function Device(props: DeviceProp): JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const [pi_id, setPiID] = useState("");
     const [isDeviceExist, setIsDeviceExist] = useState(false);
+    const [renew, setRenew] = useState(0);
     useEffect(() => {
         const url = "https://1zk561r8c4.execute-api.us-east-1.amazonaws.com/api/user/device";
-        setLoading(true);
         fetch(url, {
             method: 'POST',
             headers: {
@@ -49,6 +47,7 @@ export default function Device(props: DeviceProp): JSX.Element {
             .catch((error) => console.error(error))
             .finally(() => setLoading(false));
     }, []);
+    useEffect(() => { setInterval(() => setRenew(renew + 1), 5000) })
     const showDeviceList = () => {
         if (isDeviceExist)
             return (
@@ -81,7 +80,7 @@ export default function Device(props: DeviceProp): JSX.Element {
         );
     }
     return (
-        <View>
+        <View style={{ height: "100%" }}>
             {/* <LinearProgress color='primary' /> */}
             {showDeviceList()}
             {/* <ListItem
@@ -96,7 +95,7 @@ export default function Device(props: DeviceProp): JSX.Element {
                     <ListItem.Subtitle style={styles.subtitleText}>device id2</ListItem.Subtitle>
                 </ListItem.Content>
             </ListItem> */}
-
+            {isLoading ? <Loading /> : null}
         </View>
     );
 }

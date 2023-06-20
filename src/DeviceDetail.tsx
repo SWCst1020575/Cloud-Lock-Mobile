@@ -5,13 +5,14 @@ import {
     View,
     StyleSheet,
     TextInput,
-    Modal
+    Modal,
 } from 'react-native';
 import { Text, TouchableHighlight } from 'react-native';
 import {
     Colors
 } from 'react-native/Libraries/NewAppScreen';
-import 'react-native-gesture-handler'
+import 'react-native-gesture-handler';
+import Loading from './component/Loading';
 import { ListItem, LinearProgress, Button, Dialog } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/AntDesign'
 import Picker from '@ouroboros/react-native-picker';
@@ -31,19 +32,68 @@ interface DetaileProp {
 }
 import QRCode from 'react-native-qrcode-svg'
 export default function DeviceDetail(props: DetaileProp): JSX.Element {
-    const isDarkMode = useColorScheme() === 'dark';
+
     const [isGenerateKeyOpen, setGenerateKeyOpen] = useState(false);
+    const [isGrantOpen, setGrantOpen] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const [modalMsg, setModalMsg] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [modalSuccessVisible, setSuccessModalVisible] = useState(false);
     const [picker, setPicker] = useState('minute');
     const [durationTime, setDuration] = useState('');
     const [key, setKey] = useState('');
-    const [keyStatus, setKeyStatus] = useState('Not exist');
+    const [keyStatus, setKeyStatus] = useState('');
+    const [targetEmail, setTargetEmail] = useState('');
+    const [userType, setUserType] = useState('');
+    const [deviceStatus, setDeviceStatus] = useState('');
+    const [renew, setRenew] = useState(0);
+    const deviceID = props.route.params.pi_id;
+    const userID = props.route.params.userID;
     const timeout = (ms: number) => new Promise((resolve, reject) => { setTimeout(() => { resolve(ms) }, ms) });
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
+    const grant = () => {
+        if (targetEmail == "") {
+            setModalMsg("Please enter email.");
+            setModalVisible(true);
+            setTimeout(() => {
+                setModalVisible(false);
+            }, 2000);
+            return;
+        }
+        const url = "https://1zk561r8c4.execute-api.us-east-1.amazonaws.com/api/user/auth";
+        setLoading(true);
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "pi_id": deviceID,
+                "user_id": userID,
+                "tenant_id": targetEmail
+            })
+        }).then((resp) => resp.json())
+            .then((json) => {
+                console.log("grant ", json);
+                setKey(json.key);
+                if (json.statusCode != 200) {
+                    setModalMsg("Grant error!");
+                    setModalVisible(true);
+                    setTimeout(() => {
+                        setModalVisible(false);
+                    }, 2000);
+                }
+                else {
+                    setModalMsg("Grant success!");
+                    setSuccessModalVisible(true);
+                    setTimeout(() => {
+                        setSuccessModalVisible(false);
+                    }, 2000);
+                }
+            })
+            .catch((error) => console.log(error))
+            .finally(() => setLoading(false));
+    }
     const generate = () => {
         if (durationTime == '')
             return;
@@ -62,6 +112,7 @@ export default function DeviceDetail(props: DetaileProp): JSX.Element {
         else if (picker == "day")
             duration *= 86400;
         const url = "https://1zk561r8c4.execute-api.us-east-1.amazonaws.com/api/user/generate";
+        setLoading(true);
         fetch(url, {
             method: 'POST',
             headers: {
@@ -69,8 +120,6 @@ export default function DeviceDetail(props: DetaileProp): JSX.Element {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "user_id": "Su",
-                "generate_person_id": "Su",
                 "pi_id": deviceID,
                 "duration": duration
             })
@@ -88,29 +137,53 @@ export default function DeviceDetail(props: DetaileProp): JSX.Element {
                 else {
                     setModalMsg("Generate success!");
                     setSuccessModalVisible(true);
+                    setKeyStatus("Exist");
                     setTimeout(() => {
                         setSuccessModalVisible(false);
                     }, 2000);
                 }
             })
-            .catch((error) => console.log(error));
-        //finally();
+            .catch((error) => console.log(error))
+            .finally(() => setLoading(false));
+    }
+    const openLock = () => {
+        const url = "https://1zk561r8c4.execute-api.us-east-1.amazonaws.com/api/user/open"
+        setLoading(true);
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then((resp) => resp.json())
+            .then((json) => {
+                console.log("jjj ", json);
+                if (json.statusCode == 200) {
+                    setModalMsg("Open success!");
+                    setSuccessModalVisible(true);
+                    setTimeout(() => {
+                        setSuccessModalVisible(false);
+                    }, 2000);
+                } else {
+                }
+
+            })
+            .catch((error) => console.log(error))
+            .finally(() => setLoading(false));
     }
     const showQrcode = () => {
-        if (key != '')
+        if (key != null && key != '')
             return (
-            <QRCode size={200}
-                value={key}
-            />);
+                <QRCode size={200}
+                    value={key}
+                />);
         return null;
     }
-    const showGenerateButton=()=>{
-        
-    }
-    const deviceID = props.route.params.pi_id;
-    const userID = props.route.params.userID;
+
     useEffect(() => {
+        setLoading(true);
         const url = "https://1zk561r8c4.execute-api.us-east-1.amazonaws.com/api/user/key";
+        const urlGet = "https://1zk561r8c4.execute-api.us-east-1.amazonaws.com/api/user/permission";
         fetch(url, {
             method: 'POST',
             headers: {
@@ -124,18 +197,90 @@ export default function DeviceDetail(props: DetaileProp): JSX.Element {
         }).then((resp) => resp.json())
             .then((json) => {
                 console.log("jjj ", json);
-                if (json != null){
+                if (json.statusCode == 200) {
                     setKey(json.key)
                     setKeyStatus("Exist")
+                } else {
+                    setKey('')
+                    setKeyStatus("Not exist")
                 }
                 //setKey(json.key);
             })
-            .catch((error) => console.error(error));
-        //.finally();
+            .catch((error) => console.log(error))
+            .finally(() => setLoading(false));
+        fetch(urlGet, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "request_id": userID,
+                "pi_id": deviceID,
+            })
+        }).then((resp) => resp.json())
+            .then((json) => {
+                if (json.statusCode == 200) {
+                    setUserType(json.type);
+                    setDeviceStatus(json.status);
+                } else {
+                    //setUserType('');
+                }
+                //setKey(json.key);
+            })
+            .catch((error) => console.log(error));
     }, []);
-
+    // const updateStatus = () => {
+    //     const url = "https://1zk561r8c4.execute-api.us-east-1.amazonaws.com/api/user/key";
+    //     const urlGet = "https://1zk561r8c4.execute-api.us-east-1.amazonaws.com/api/user/permission";
+    //     // fetch(url, {
+    //     //     method: 'POST',
+    //     //     headers: {
+    //     //         Accept: 'application/json',
+    //     //         'Content-Type': 'application/json',
+    //     //     },
+    //     //     body: JSON.stringify({
+    //     //         "user_id": userID,
+    //     //         "pi_id": deviceID,
+    //     //     })
+    //     // }).then((resp) => resp.json())
+    //     //     .then((json) => {
+    //     //         if (json.statusCode == 200) {
+    //     //             setKey(json.key)
+    //     //             setKeyStatus("Exist")
+    //     //         } else {
+    //     //             setKey('')
+    //     //             setKeyStatus("Not exist")
+    //     //         }
+    //     //         //setKey(json.key);
+    //     //     })
+    //     //     .catch((error) => console.log(error));
+    //     fetch(urlGet, {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
+    //             "request_id": userID,
+    //             "pi_id": deviceID,
+    //         })
+    //     }).then((resp) => resp.json())
+    //         .then((json) => {
+    //             console.log("ggg ", json);
+    //             if (json.statusCode == 200) {
+    //                 setUserType(json.type);
+    //                 setDeviceStatus(json.status);
+    //             } else {
+    //                 setUserType('');
+    //             }
+    //             //setKey(json.key);
+    //         })
+    //         .catch((error) => console.log(error));
+    // }
+    //setInterval(() => setRenew(renew + 1), 1000);
     return (
-        <View>
+        <View style={{ height: "100%" }}>
             {/* <LinearProgress color='primary' /> */}
             <ListItem>
                 <ListItem.Content>
@@ -154,8 +299,38 @@ export default function DeviceDetail(props: DetaileProp): JSX.Element {
             </ListItem>
             <ListItem>
                 <ListItem.Content>
+                    <ListItem.Title style={styles.text}>Lock status: {deviceStatus}</ListItem.Title>
+                </ListItem.Content>
+            </ListItem>
+            <ListItem>
+                <ListItem.Content>
+                    <ListItem.Title style={styles.text}>Permission: {userType}</ListItem.Title>
+                </ListItem.Content>
+            </ListItem>
+            {(key == '' || key == null) ?
+                <ListItem>
+                    <ListItem.Content>
+                        <Button
+                            title={'Generate key'}
+                            buttonStyle={{
+                                backgroundColor: 'rgba(0, 0, 0, 1)',
+                                borderRadius: 10,
+                            }}
+                            titleStyle={{ fontSize: 18 }}
+                            containerStyle={{
+                                paddingHorizontal: 40,
+                                height: 45,
+                                width: "100%",
+                                marginVertical: 10,
+                            }}
+                            onPress={() => setGenerateKeyOpen(true)}
+                        />
+                    </ListItem.Content>
+                </ListItem> : null}
+            <ListItem>
+                <ListItem.Content>
                     <Button
-                        title={'Generate key'}
+                        title={'Open lock'}
                         buttonStyle={{
                             backgroundColor: 'rgba(0, 0, 0, 1)',
                             borderRadius: 10,
@@ -167,11 +342,11 @@ export default function DeviceDetail(props: DetaileProp): JSX.Element {
                             width: "100%",
                             marginVertical: 10,
                         }}
-                        onPress={() => setGenerateKeyOpen(true)}
+                        onPress={openLock}
                     />
                 </ListItem.Content>
             </ListItem>
-            <ListItem>
+            {userType == "owner" ? <ListItem>
                 <ListItem.Content>
                     <Button
                         title={'Grant permission'}
@@ -184,14 +359,17 @@ export default function DeviceDetail(props: DetaileProp): JSX.Element {
                             paddingHorizontal: 40,
                             height: 45,
                             width: "100%",
-                            marginVertical: 10,
+                            marginVertical: 8,
                         }}
-                        onPress={() => setGenerateKeyOpen(true)}
+                        onPress={() => setGrantOpen(true)}
                     />
                 </ListItem.Content>
-            </ListItem>
-            <ListItem style={{alignItems:'center'}}>
-                {showQrcode()}
+            </ListItem> : null}
+            <ListItem style={{ alignItems: 'center' }}>
+                {(key != null && key != '') ?
+                    <QRCode size={200}
+                        value={key}
+                    /> : null}
             </ListItem>
             <Dialog overlayStyle={{ borderRadius: 5 }} isVisible={isGenerateKeyOpen}>
                 <Dialog.Title title="Generate key" />
@@ -223,34 +401,17 @@ export default function DeviceDetail(props: DetaileProp): JSX.Element {
                     <Dialog.Button style={{ flex: 1 }} title="generate" onPress={() => { setGenerateKeyOpen(false); generate(); }} />
                 </View>
             </Dialog>
-            <Dialog overlayStyle={{ borderRadius: 5 }} isVisible={isGenerateKeyOpen}>
-                <Dialog.Title title="Auth" />
-                <Text style={{ fontSize: 16 }}></Text>
-
-                <View style={{ width: "100%", flexDirection: 'row' }}>
-                    <TextInput
-                        placeholder='time'
-                        keyboardType="numeric"
-                        style={styles.input}
-                        onChangeText={setDuration}
-                        value={durationTime}
-                    />
-                    <Picker
-                        component={PickerDisplay}
-                        onChanged={setPicker}
-                        options={[
-                            { value: 'second', text: 'second' },
-                            { value: 'minute', text: 'minute' },
-                            { value: 'hour', text: 'hour' },
-                            { value: 'day', text: 'day' }
-                        ]}
-                        value={picker}
-                    />
-                </View>
-
+            <Dialog overlayStyle={{ borderRadius: 5 }} isVisible={isGrantOpen}>
+                <Dialog.Title title="Grant" />
+                <TextInput
+                    placeholder='Email'
+                    style={styles.inputEmail}
+                    onChangeText={setTargetEmail}
+                    value={targetEmail}
+                />
                 <View style={{ marginHorizontal: 10, width: "100%", justifyContent: "flex-end", flexDirection: 'row', alignItems: "center" }}>
-                    <Dialog.Button style={{ flex: 1 }} title="cancel" onPress={() => setGenerateKeyOpen(false)} />
-                    <Dialog.Button style={{ flex: 1 }} title="generate" onPress={() => { setGenerateKeyOpen(false); generate(); }} />
+                    <Dialog.Button style={{ flex: 1 }} title="cancel" onPress={() => setGrantOpen(false)} />
+                    <Dialog.Button style={{ flex: 1 }} title="grant" onPress={() => { setGrantOpen(false); grant(); }} />
                 </View>
             </Dialog>
             <Modal
@@ -279,6 +440,7 @@ export default function DeviceDetail(props: DetaileProp): JSX.Element {
                     </View>
                 </View>
             </Modal>
+            {isLoading ? <Loading /> : null}
         </View>
     );
 }
@@ -290,6 +452,16 @@ const styles = StyleSheet.create({
     },
     input: {
         width: "30%",
+        borderColor: "gray",
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        borderTopWidth: 0,
+        borderBottomWidth: 1,
+        padding: 5,
+        fontSize: 16,
+    },
+    inputEmail: {
+        //width: "30%",
         borderColor: "gray",
         borderLeftWidth: 0,
         borderRightWidth: 0,

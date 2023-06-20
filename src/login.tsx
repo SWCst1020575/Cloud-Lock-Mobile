@@ -96,7 +96,7 @@ export default function Login(): JSX.Element {
                 >
                     <Text style={styles.text}>Register</Text>
                 </Pressable>
-                <View style={{ justifyContent: 'center', flexDirection: "row" }}>
+                {/* <View style={{ justifyContent: 'center', flexDirection: "row" }}>
                     <Text style={{ marginVertical: 5, fontSize: 16, color: "rgba(0, 0, 0, 0.6)" }}>------------------OAuth------------------</Text>
                 </View>
                 <Pressable
@@ -122,7 +122,7 @@ export default function Login(): JSX.Element {
                     })}
                 >
                     <Text style={styles.text}>Skip(for test)</Text>
-                </Pressable>
+                </Pressable> */}
             </View>
 
         </View >

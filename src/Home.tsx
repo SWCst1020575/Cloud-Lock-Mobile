@@ -35,7 +35,7 @@ export default function Home(): JSX.Element {
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-        //console.log(user);
+        console.log(user);
         return subscriber; // unsubscribe on unmount
     }, []);
     return (
@@ -59,7 +59,7 @@ export default function Home(): JSX.Element {
                         {
                             backgroundColor: pressed ? 'rgba(0, 0, 0, 0.8)' : 'black',
                         }, styles.button]}
-                    onPress={() => navigation.navigate('Device', { "userID": "rqe@abc.abc" })}
+                    onPress={() => navigation.navigate('Device', { "userID": user.email })}
                 >
                     <Text style={styles.text}>Device list</Text>
                 </Pressable>
